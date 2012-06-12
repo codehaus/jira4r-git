@@ -13,18 +13,22 @@
 #  See the License for the specific language governing permissions and         #
 #  limitations under the License.                                              #
 ################################################################################
+require 'rubygems'
+require 'bundler'
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
+
+
+
 require 'net/http'
 require 'fileutils'
 require 'rake/clean'
 require 'logger'
-
-begin
-  require 'rubygems'
-  require 'rake/gempackagetask'
-rescue Exception
-  nil
-end
-
 require 'wsdl/soap/wsdl2ruby'
 
 logger = Logger.new(STDERR)
@@ -182,4 +186,27 @@ begin
   end
 rescue LoadError
   # warn ">>> You don't seem to have the rspec gem installed; not adding rspec tasks"
+end
+
+
+
+
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
+  gem.name = "jira4r"
+  gem.homepage = "https://xircles.rubyhaus.org/projects/jira4r"
+  gem.license = "ASLv2"
+  gem.summary = %Q{JIRA SOAP binding library for Ruby}
+  gem.description = %Q{JIRA SOAP binding library for Ruby}
+  gem.email = "bwalding@codehaus.org"
+  gem.authors = ["Ben Walding"]
+end
+Jeweler::RubygemsDotOrgTasks.new
+
+require 'rake/testtask'
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.pattern = 'test/**/test_*.rb'
+  test.verbose = true
 end
